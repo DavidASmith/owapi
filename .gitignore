@@ -1,0 +1,4 @@
+.spyproject/
+*.pyc
+
+sandbox.py

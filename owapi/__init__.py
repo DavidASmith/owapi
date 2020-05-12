@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import requests
-from pandas import json_normalize
-from pandas import to_datetime
-
+import pandas as pd
 
 def get_api_key():
     return(os.environ.get('OPENWEATHERAPIKEY'))
@@ -33,15 +31,25 @@ def get_current_and_forecast(lat, lon):
 def get_current_obs(lat, lon):
     current_forecast_response = get_current_and_forecast(lat, lon)
 
-    current = json_normalize(current_forecast_response['current'])
-    current.dt = (to_datetime(current.dt, unit='s'))
-    current.sunrise = (to_datetime(current.sunrise, unit='s'))
-    current.sunset = (to_datetime(current.sunset, unit='s'))
-    return(current)
+
+    current_weather_info = pd.json_normalize(current_forecast_response['current'],
+                             record_path = 'weather', 
+                             record_prefix = 'weather_')
+    
+    current_weather = pd.DataFrame(current_forecast_response['current'])
+    current_weather = current_weather.drop('weather', axis = 1)
+    current_weather = pd.concat([current_weather, current_weather_info], axis = 1)
+    
+    current_weather.dt = (pd.to_datetime(current_weather.dt, unit='s'))
+    current_weather.sunrise = (pd.to_datetime(current_weather.sunrise, unit='s'))
+    current_weather.sunset = (pd.to_datetime(current_weather.sunset, unit='s'))
+    return(current_weather)
+
+
 
 def get_daily_forecast(lat, lon):
     current_forecast_response = get_current_and_forecast(lat, lon)
 
-    daily = json_normalize(current_forecast_response['daily'])
+    daily = pd.json_normalize(current_forecast_response['daily'])
     
     return(daily)

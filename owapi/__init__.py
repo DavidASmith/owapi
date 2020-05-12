@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import requests
-from pandas.io.json import json_normalize
+from pandas import json_normalize
 
 
 def get_api_key():
@@ -35,3 +35,10 @@ def get_current_obs(lat, lon):
     current = json_normalize(current_forecast_response['current'])
     
     return(current)
+
+def get_daily_forecast(lat, lon):
+    current_forecast_response = get_current_and_forecast(lat, lon)
+
+    daily = json_normalize(current_forecast_response['daily'])
+    
+    return(daily)

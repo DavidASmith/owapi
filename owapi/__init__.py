@@ -52,4 +52,8 @@ def get_daily_forecast(lat, lon):
 
     daily = pd.json_normalize(current_forecast_response['daily'])
     
+    daily.dt = pd.to_datetime(daily.dt, unit = 's').dt.date
+    daily.sunrise = pd.to_datetime(daily.sunrise, unit = 's')
+    daily.sunset = pd.to_datetime(daily.sunset, unit = 's')
+    
     return(daily)

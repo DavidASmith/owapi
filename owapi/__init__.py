@@ -53,10 +53,18 @@ def get_current_obs(lat, lon):
 def get_daily_forecast(lat, lon):
     current_forecast_response = get_current_and_forecast(lat, lon)
 
-    daily = pd.json_normalize(current_forecast_response['daily'])
+    daily_weather_info = pd.json_normalize(current_forecast_response['daily'],
+                             record_path = 'weather', 
+                             record_prefix = 'weather_')
+
+    daily_forecast = pd.json_normalize(current_forecast_response['daily'], 
+                                       sep = '_')
+    daily_forecast = daily_forecast.drop('weather', axis = 1)
+    daily_forecast = pd.concat([daily_forecast, daily_weather_info], axis = 1)
     
-    daily.dt = pd.to_datetime(daily.dt, unit = 's').dt.date
-    daily.sunrise = pd.to_datetime(daily.sunrise, unit = 's')
-    daily.sunset = pd.to_datetime(daily.sunset, unit = 's')
     
-    return(daily)
+    daily_forecast.dt = pd.to_datetime(daily_forecast.dt, unit = 's').dt.date
+    daily_forecast.sunrise = pd.to_datetime(daily_forecast.sunrise, unit = 's')
+    daily_forecast.sunset = pd.to_datetime(daily_forecast.sunset, unit = 's')
+    
+    return(daily_forecast)

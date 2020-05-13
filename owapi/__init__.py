@@ -4,7 +4,10 @@ import requests
 import pandas as pd
 
 def get_api_key():
-    return(os.environ.get('OPENWEATHERAPIKEY'))
+    key = os.environ.get('OPENWEATHERAPIKEY')
+    if key is None:
+        raise ValueError('API key is not set.')
+    return(key)
 
 def set_api_key(api_key):
     os.environ['OPENWEATHERAPIKEY'] = api_key

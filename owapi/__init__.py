@@ -3,6 +3,7 @@ import os
 import requests
 import pandas as pd
 from time import mktime
+import datetime
 
 def get_api_key():
     key = os.environ.get('OPENWEATHERAPIKEY')
@@ -103,3 +104,14 @@ def get_obs_date(lat, lon, dt):
     hourly.dt = pd.to_datetime(hourly.dt, unit = 's')
 
     return(hourly)
+
+def get_all_obs(lat, lon):
+    datelist = [datetime.date.today() - datetime.timedelta(days=i) for i in range(1, 5)]
+
+    obs_list = [get_obs_date(53.304962, -1.467734, dt) for dt in datelist]
+
+    all_obs = pd.concat(obs_list)
+    
+    return(all_obs)
+
+    

@@ -68,3 +68,34 @@ def get_daily_forecast(lat, lon):
     daily_forecast.sunset = pd.to_datetime(daily_forecast.sunset, unit = 's')
     
     return(daily_forecast)
+
+
+def get_obs_date(lat, lon, dt):
+    url = "https://api.openweathermap.org/data/2.5/onecall/timemachine"
+
+    params = {
+        "lat": lat,  
+        "lon": lon,
+        "dt": dt,
+        "units": "metric",
+        "appid": get_api_key()
+        }
+    
+    response = requests.get(url, 
+                        params = params)
+    
+    data = response.json()
+
+    hourly_weather_info = pd.json_normalize(data['hourly'],
+                             record_path = 'weather', 
+                             record_prefix = 'weather_')
+
+    hourly = pd.json_normalize(data['hourly'], 
+                                       sep = '_')
+
+    hourly = hourly.drop('weather', axis = 1)
+    hourly = pd.concat([hourly, hourly_weather_info], axis = 1)
+
+    hourly.dt = pd.to_datetime(hourly.dt, unit = 's')
+
+    return(hourly)

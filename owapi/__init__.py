@@ -2,6 +2,7 @@
 import os
 import requests
 import pandas as pd
+from time import mktime
 
 def get_api_key():
     key = os.environ.get('OPENWEATHERAPIKEY')
@@ -71,12 +72,15 @@ def get_daily_forecast(lat, lon):
 
 
 def get_obs_date(lat, lon, dt):
+    
+    dt_POSIX = int(mktime(dt.timetuple()))    
+
     url = "https://api.openweathermap.org/data/2.5/onecall/timemachine"
 
     params = {
         "lat": lat,  
         "lon": lon,
-        "dt": dt,
+        "dt": dt_POSIX,
         "units": "metric",
         "appid": get_api_key()
         }

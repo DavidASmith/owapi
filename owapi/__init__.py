@@ -108,7 +108,7 @@ def get_obs_date(lat, lon, dt):
 def get_all_obs(lat, lon):
     datelist = [datetime.datetime.utcnow() - datetime.timedelta(days=i) for i in range(0, 6)]
 
-    obs_list = [get_obs_date(53.304962, -1.467734, dt) for dt in datelist]
+    obs_list = [get_obs_date(lat, lon, dt) for dt in datelist]
 
     all_obs = pd.concat(obs_list)
     

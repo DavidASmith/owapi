@@ -84,7 +84,7 @@ def get_hourly_forecast(lat, lon):
     hourly_forecast = hourly_forecast.drop('weather', axis = 1)
     hourly_forecast = pd.concat([hourly_forecast, hourly_weather_info], axis = 1)
        
-    hourly_forecast.dt = pd.to_datetime(hourly_forecast.dt, unit = 's').dt.date
+    hourly_forecast.dt = pd.to_datetime(hourly_forecast.dt, unit = 's')
     
     return(hourly_forecast)
 

@@ -72,6 +72,24 @@ def get_daily_forecast(lat, lon):
     return(daily_forecast)
 
 
+def get_hourly_forecast(lat, lon):
+    current_forecast_response = get_current_and_forecast(lat, lon)
+
+    hourly_weather_info = pd.json_normalize(current_forecast_response['hourly'],
+                             record_path = 'weather', 
+                             record_prefix = 'weather_')
+
+    hourly_forecast = pd.json_normalize(current_forecast_response['hourly'], 
+                                       sep = '_')
+    hourly_forecast = hourly_forecast.drop('weather', axis = 1)
+    hourly_forecast = pd.concat([hourly_forecast, hourly_weather_info], axis = 1)
+       
+    hourly_forecast.dt = pd.to_datetime(hourly_forecast.dt, unit = 's').dt.date
+    
+    return(hourly_forecast)
+
+
+
 def get_obs_date(lat, lon, dt):
     
     dt_POSIX = int(mktime(dt.timetuple()))    
